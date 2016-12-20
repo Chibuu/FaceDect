@@ -82,7 +82,7 @@ for i in range(1,height+1 - filter_size):
         temp_sum=np.sum(skin[i:i+4, j:j+4])
         skin_wnr[i:i+filter_size, j:j+filter_size]=(temp_sum>=13);
 
-'''
+
 img = Image.fromarray(np.uint8(img))
 
 img.show(title= 'Original Image')
@@ -95,7 +95,7 @@ skin = Image.fromarray(np.uint8(255*skin))
 
 skin.show(title = 'Skin detection complete')
 
-'''
+
 skin_with_noise_removal = Image.fromarray(np.uint8(255*skin_wnr))
 
 skin_with_noise_removal.show('After low pass filter')
