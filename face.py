@@ -76,6 +76,8 @@ light_comp[:,:,2] = blue
 
 
 #skin colour detection by designated chrominance range between 10 and 45
+#Skin - 1
+#Non-skin - 0
 cr[np.where(cr<10) ] =0
 cr[np.where(cr>45) ] =0
 cr[np.nonzero(cr)]=1
@@ -215,7 +217,7 @@ for label in range(1,np.amax(bw_label)):
         width = np.amax(col) -  start_x + 1
         height = np.amax(row) - start_y + 1
         
-        #take lev
+        #height to width ratio used to choose label
         if ((height/width > low_threshold) and (height/width <high_threshold)):
             #tcurrent label number
             final_label.append(label)
