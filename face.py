@@ -12,8 +12,8 @@ from PIL import Image
 from PIL import ImageDraw
 
 #open image file
-#img = Image.open('ron.jpg')
-img = Image.open('nadal.jpg')
+img = Image.open('ron.jpg')
+#img = Image.open('nadal.jpg')
 #convert to numpy array
 img = np.asarray(img)
 original_image = img
@@ -76,8 +76,8 @@ light_comp[:,:,2] = blue
 
 
 #skin colour detection by designated chrominance range between 10 and 45
-#Skin - 1
-#Non-skin - 0
+#Skin: 1
+#Non-Skin: 0
 cr[np.where(cr<10) ] =0
 cr[np.where(cr>45) ] =0
 cr[np.nonzero(cr)]=1
@@ -122,11 +122,11 @@ bw = bw[::down_sample,::down_sample]
 bw_row,bw_col = bw.shape
 
 '''I manually ported the connected component labelling from Matlab to python with slight modifications
-Credit to :michael scheinfeild
+Credit to: Michael scheinfeild
 https://ch.mathworks.com/matlabcentral/fileexchange/38010-connected-component-labeling-like-bwlabel
 '''
 def findConnectedLabels(L,startLabel,bwcur,ir,ic,m,n):
-
+	
     a = bwcur[ir+1, ic]
     b = bwcur[ir-1, ic]   
     c = bwcur[ir, ic+1] 
@@ -153,11 +153,10 @@ def findConnectedLabels(L,startLabel,bwcur,ir,ic,m,n):
         L[ir, ic-1]=startLabel
         L  = findConnectedLabels(L,startLabel,bwcur,ir,ic-1,m,n)
 
-
     return L
 
 def detect(bw):
-    
+    print("Inside detect")
     m,n = bw.shape
     emp1= np.zeros((1,n),dtype = int)
     t1 = np.append(emp1,bw,axis=0)
@@ -175,7 +174,6 @@ def detect(bw):
     for ir in range(2,m+2):
         for ic in range(2,n+2):
             curdata = bwnnew[ir,ic]
-            #print(curdata)
             lc = L[ir,ic]
             if (curdata ==1) and(lc ==0):
                 L[ir,ic]= startLabel
@@ -200,8 +198,13 @@ start_pos_y = []
 height_list = []
 width_list = []
 
+start_x = 0
+start_y = 0
+width = 0
+height = 0
+
 #these are from tests that I performed. 
-low_threshold = 1.0
+low_threshold = 0.8
 high_threshold = 1.5
 
 #for every label
@@ -216,7 +219,7 @@ for label in range(1,np.amax(bw_label)):
         start_y = np.amin(row)
         width = np.amax(col) -  start_x + 1
         height = np.amax(row) - start_y + 1
-        
+
         #height to width ratio used to choose label
         if ((height/width > low_threshold) and (height/width <high_threshold)):
             #tcurrent label number
@@ -226,6 +229,7 @@ for label in range(1,np.amax(bw_label)):
             start_pos_y.append(start_y)
             height_list.append(height)
             width_list.append(width)
+
 
 for i in range(len(final_label)):
     label_num = final_label[i]
